@@ -85,8 +85,61 @@
             $this->strNomFiscal = $nomfiscal;
             $this->strDirFiscal = $dirfiscal;
 
-            dep(get_object_vars($this));
+            //Ver datos que llegan a la funcion updateCliente
+            //dep(get_object_vars($this));
+
+            $sql = "SELECT identificacion,email FROM cliente WHERE 
+            (email = :email AND idcliente != :id ) OR
+            (identificacion = :ident AND idcliente != :id) AND
+            status = 1";
+            $arrData = array(":email" => $this->strEmail,
+                     ":ident" => $this->strIdentificacion,
+                     ":id" =>  $this->intIdCliente 
+                    );
+            $request_cliente = $this->select($sql,$arrData);
+
+            if(empty($request_cliente))
+         //Si el cliente no existe insertar
+            {
+                $sql = "UPDATE cliente SET identificacion = :ident, nombres = :nom, apellidos = :ape, telefono = :tel, email = :email,
+                                         direccion = :dir, nit = :nit, nombrefiscal = :nomfiscal, direccionfiscal = :dirfiscal
+                        WHERE idcliente = :id ";
+                $arrData = array(":ident" =>  $this->strIdentificacion,
+                                 ":nom" => $this->strNombres,
+                                 ":ape" => $this->strApellidos,
+                                 ":tel" => $this->intTelefono,
+                                 ":email" => $this->strEmail,
+                                 ":dir" => $this->strDireccion,
+                                 ":nit" => $this->strNit,
+                                 ":nomfiscal" => $this->strNomFiscal,
+                                 ":dirfiscal" => $this->strDirFiscal,
+                                 ":id" => $this->intIdCliente
+                            );
+                $request = $this->update($sql,$arrData);
+                
+                return $request;
+
+            }else{
+                return false;
+            }
+
+
+
+
         } //Fin de la funcion updateCliente
+
+        //Funcion getCliente para buscar y validar id cliente
+        public function getCliente(int $idcliente)
+        {
+            
+            $this->intIdCliente = $idcliente;
+            $sql = "SELECT * FROM cliente WHERE idcliente = :idcliente";
+            $arrData = array(":idcliente" => $this->intIdCliente);
+            $request = $this->select($sql,$arrData);
+            return $request;
+
+
+        } //Fin de la funcion getCliente
         
 
     }
