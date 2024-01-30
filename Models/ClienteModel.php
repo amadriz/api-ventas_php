@@ -8,7 +8,7 @@
         private $strIdentificacion;
         private $strNombres;
         private $strApellidos;
-        private $strTelefono;
+        private $intTelefono;
         private $strEmail;
         private $strDireccion;
         private $strNit;
@@ -22,7 +22,7 @@
         }
 
         //Invocamos la funcion para obtener los clientes
-        public function insertCliente(string $identificacion, string $nombres, string $apellidos, string $telefono, string $email, string $direccion, string $nit, string $nomfiscal, string $dirfiscal)
+        public function insertCliente(string $identificacion, string $nombres, string $apellidos, int $telefono, string $email, string $direccion, string $nit, string $nomfiscal, string $dirfiscal)
         {
             $this->strIdentificacion = $identificacion;
             $this->strNombres = $nombres;
@@ -69,7 +69,24 @@
 
 
 
-        }
+        } //Fin de la funcion insertCliente
+
+        //Funcion para actualizar cliente
+        public function updateCliente(int $idcliente, string $identificacion, string $nombres, string $apellidos, int $telefono, string $email, string $direccion, string $nit, string $nomfiscal, string $dirfiscal)
+        {
+            $this->intIdCliente = $idcliente;
+            $this->strIdentificacion = $identificacion;
+            $this->strNombres = $nombres;
+            $this->strApellidos = $apellidos;
+            $this->intTelefono = $telefono;
+            $this->strEmail = $email;
+            $this->strDireccion = $direccion;
+            $this->strNit = $nit;
+            $this->strNomFiscal = $nomfiscal;
+            $this->strDirFiscal = $dirfiscal;
+
+            dep(get_object_vars($this));
+        } //Fin de la funcion updateCliente
         
 
     }

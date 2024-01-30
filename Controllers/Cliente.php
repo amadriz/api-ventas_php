@@ -11,7 +11,150 @@
             echo "Extraer cliente".$idcliente;
         }
 
-        //update cliente
+         //Create function registro
+         public function registro()
+         {
+             try {
+                 $method = $_SERVER['REQUEST_METHOD'];
+                 $response = [];
+ 
+ 
+                 //Validar si es un metodo post
+                 if($method == "POST")
+                 {
+                     
+                    $_POST = json_decode(file_get_contents('php://input'), true);
+ 
+                    //Validar identificacion
+                      if(empty($_POST['identificacion']))
+                      {
+                             $response = array(
+                             "status" => false,
+                             "message" => "Error en la identificación"
+                             );
+                             jsonResponse($response, 400);
+                             die();
+     
+                      }
+ 
+                    //Validar nombres
+                    if(empty($_POST['nombres']) or !testString($_POST['nombres']))
+                    {
+                        $response = array(
+                        "status" => false,
+                        "message" => "Error en el nombre"
+                        );
+                        jsonResponse($response, 400);
+                        die();
+                    }
+                    //Validar apellidos
+                    if(empty($_POST['apellidos']) or!testString($_POST['apellidos']))
+                    {
+                        $response = array(
+                        "status" => false,
+                        "message" => "Error en el apellido"
+                        );
+                        jsonResponse($response, 400);
+                        die();     
+                    }
+                    //validar telefono
+                    if(empty($_POST['telefono']) or !testEntero($_POST['telefono']))
+                    {
+                        $response = array(
+                        "status" => false,
+                        "message" => "Error en el telefono"
+                        );
+                        jsonResponse($response, 400);
+                        die();
+                    }
+                    //validar email
+                    if(empty($_POST['email']) or !testEmail($_POST['email']))
+                    {
+                        $response = array(
+                        "status" => false,
+                        "message" => "Error en el email"
+                        );
+                        jsonResponse($response, 400);
+                        die();
+                    }
+                    //validar direccion
+                    if(empty($_POST['direccion']))
+                    {
+                        $response = array(
+                        "status" => false,
+                        "message" => "Error en la direccion"
+                        );
+                        jsonResponse($response, 400);
+                        die();
+                    }
+ 
+                     //Almacenar datos en variables
+ 
+                     $strIdentificacion =  $_POST['identificacion'];
+                     $strNombres =  ucwords(strtolower($_POST['nombres']));
+                     $strApellidos =  ucwords(strtolower($_POST['apellidos']));
+                     $intTelefono =  $_POST['telefono'];
+                     $strEmail =  strtolower($_POST['email']);
+                     $strDireccion =  $_POST['direccion'];
+                     $strNit = !empty($_POST['nit']) ? strClean($_POST['nit']) : "";
+                     $strNomFiscal = !empty($_POST['nombrefiscal']) ? strClean($_POST['nombrefiscal']) : "";
+                     $strDirFiscal = !empty($_POST['direccionfiscal']) ? strClean($_POST['direccionfiscal']) : "";
+ 
+                     $request = $this->model->insertCliente($strIdentificacion, 
+                                                            $strNombres, 
+                                                            $strApellidos, 
+                                                            $intTelefono, 
+                                                            $strEmail, 
+                                                            $strDireccion, 
+                                                            $strNit, 
+                                                            $strNomFiscal, 
+                                                            $strDirFiscal);
+ 
+ 
+ 
+                 if($request > 0)
+                 {
+                     $arrCliente = array('idcliente' => $request,
+                                     'identificacion' => $strIdentificacion,
+                                     'nombres' => $strNombres,
+                                     'apellidos' => $strApellidos,
+                                     'telefono' => $intTelefono,
+                                     'email' => $strEmail,
+                                     'direccion' => $strDireccion,
+                                     'nit' => $strNit,
+                                     'nombreFiscal' => $strNomFiscal,
+                                     'direccionFiscal' => $strDirFiscal
+                                     );
+                     $response = array('status' => true , 'msg' => 'Datos guardados correctamente', 'data' => $arrCliente);                
+                 }else{
+                     $response = array('status' => false , 'msg' => 'La identificación o el email ya existe');
+                 }
+                 $code = 200;  
+                         
+                 }else{
+                     $response = array(
+                     "status" => 400,
+                     "message" => "Error al registrar"
+                     );
+ 
+                     $code = 400;
+                 } //end if method post
+                 
+                 $code = 200;
+                 //Llamamos funcion response desde helpers.php
+                 jsonResponse($response, $code);
+                 die();
+                 
+             } //end if method post
+             catch(Exception $e){
+                 //show error in screen
+                 echo "Error: ".$e->getMessage();
+ 
+             }
+             die();
+         }
+
+        //UPDATE cliente
         public function actualizar($idcliente)
         {
             //Validar el tipo de solicitud
@@ -110,6 +253,19 @@
                     $strNomFiscal = !empty($arrdata['nombrefiscal']) ? strClean($arrdata['nombrefiscal']) : "";
                     $strDirFiscal = !empty($arrdata['direccionfiscal']) ? strClean($arrdata['direccionfiscal']) : "";
 
+                    //enviar los datos al modelo
+                    $request = $this->model->updateCliente($idcliente, 
+                                                           $strIdentificacion, 
+                                                           $strNombres, 
+                                                           $strApellidos, 
+                                                           $intTelefono, 
+                                                           $strEmail, 
+                                                           $strDireccion, 
+                                                           $strNit, 
+                                                           $strNomFiscal, 
+                                                           $strDirFiscal);
+                
+
                     
                     $response = array('status' => true , 'msg' => 'Datos actualizados correctamente', 'data' => $arrdata);
                     $code = 200;
@@ -142,148 +298,7 @@
             echo "Eliminar cliente".$idcliente;
         }
 
-        //Create function registro
-        public function registro()
-        {
-            try {
-                $method = $_SERVER['REQUEST_METHOD'];
-                $response = [];
-
-
-                //Validar si es un metodo post
-                if($method == "POST")
-                {
-                    
-                   $_POST = json_decode(file_get_contents('php://input'), true);
-
-                   //Validar identificacion
-                     if(empty($_POST['identificacion']))
-                     {
-                            $response = array(
-                            "status" => false,
-                            "message" => "Error en la identificación"
-                            );
-                            jsonResponse($response, 400);
-                            die();
-    
-                     }
-
-                   //Validar nombres
-                   if(empty($arrdata['nombres']) or !testString($arrdata['nombres']))
-                   {
-                       $response = array(
-                       "status" => false,
-                       "message" => "Error en el nombre"
-                       );
-                       jsonResponse($response, 400);
-                       die();
-                   }
-                   //Validar apellidos
-                   if(empty($arrdata['apellidos']) or!testString($arrdata['apellidos']))
-                   {
-                       $response = array(
-                       "status" => false,
-                       "message" => "Error en el apellido"
-                       );
-                       jsonResponse($response, 400);
-                       die();     
-                   }
-                   //validar telefono
-                   if(empty($arrdata['telefono']) or !testEntero($arrdata['telefono']))
-                   {
-                       $response = array(
-                       "status" => false,
-                       "message" => "Error en el telefono"
-                       );
-                       jsonResponse($response, 400);
-                       die();
-                   }
-                   //validar email
-                   if(empty($arrdata['email']) or !testEmail($arrdata['email']))
-                   {
-                       $response = array(
-                       "status" => false,
-                       "message" => "Error en el email"
-                       );
-                       jsonResponse($response, 400);
-                       die();
-                   }
-                   //validar direccion
-                   if(empty($arrdata['direccion']))
-                   {
-                       $response = array(
-                       "status" => false,
-                       "message" => "Error en la direccion"
-                       );
-                       jsonResponse($response, 400);
-                       die();
-                   }
-
-                    //Almacenar datos en variables
-
-                    $strIdentificacion =  $_POST['identificacion'];
-                    $strNombres =  ucwords(strtolower($_POST['nombres']));
-                    $strApellidos =  ucwords(strtolower($_POST['apellidos']));
-                    $intTelefono =  $_POST['telefono'];
-                    $strEmail =  strtolower($_POST['email']);
-                    $strDireccion =  $_POST['direccion'];
-                    $strNit = !empty($_POST['nit']) ? strClean($_POST['nit']) : "";
-                    $strNomFiscal = !empty($_POST['nombrefiscal']) ? strClean($_POST['nombrefiscal']) : "";
-                    $strDirFiscal = !empty($_POST['direccionfiscal']) ? strClean($_POST['direccionfiscal']) : "";
-
-                    $request = $this->model->insertCliente($strIdentificacion, 
-                                                           $strNombres, 
-                                                           $strApellidos, 
-                                                           $intTelefono, 
-                                                           $strEmail, 
-                                                           $strDireccion, 
-                                                           $strNit, 
-                                                           $strNomFiscal, 
-                                                           $strDirFiscal);
-
-
-
-                if($request > 0)
-                {
-                    $arrCliente = array('idcliente' => $request,
-                                    'identificacion' => $strIdentificacion,
-                                    'nombres' => $strNombres,
-                                    'apellidos' => $strApellidos,
-                                    'telefono' => $intTelefono,
-                                    'email' => $strEmail,
-                                    'direccion' => $strDireccion,
-                                    'nit' => $strNit,
-                                    'nombreFiscal' => $strNomFiscal,
-                                    'direccionFiscal' => $strDirFiscal
-                                    );
-                    $response = array('status' => true , 'msg' => 'Datos guardados correctamente', 'data' => $arrCliente);                
-                }else{
-                    $response = array('status' => false , 'msg' => 'La identificación o el email ya existe');
-                }
-                $code = 200;  
-                        
-                }else{
-                    $response = array(
-                    "status" => 400,
-                    "message" => "Error al registrar"
-                    );
-
-                    $code = 400;
-                } //end if method post
-                
-                $code = 200;
-                //Llamamos funcion response desde helpers.php
-                jsonResponse($response, $code);
-                die();
-                
-            } //end if method post
-            catch(Exception $e){
-                //show error in screen
-                echo "Error: ".$e->getMessage();
-
-            }
-            die();
-        }
+       
 
         public function clientes(){
             echo "Lista de clientes";
