@@ -133,15 +133,33 @@
         {
             
             $this->intIdCliente = $idcliente;
-            $sql = "SELECT * FROM cliente WHERE idcliente = :idcliente";
+            $sql = "SELECT idcliente, 
+                           identificacion, 
+                           nombres, 
+                           apellidos, 
+                           email, DATE_FORMAT(datecreated, '%d-%m-%y') as fecha_Registro FROM cliente WHERE idcliente = :idcliente";
             $arrData = array(":idcliente" => $this->intIdCliente);
             $request = $this->select($sql,$arrData);
             return $request;
 
 
         } //Fin de la funcion getCliente
-        
 
+
+        //Method to fetch all clients WHERE status = 1 AND ORDER BY IDCLIENTE DESCb
+        public function getClientes()
+        {
+            $sql = "SELECT idcliente, 
+                           identificacion, 
+                           nombres, apellidos, 
+                           telefono, 
+                           email, 
+                           direccion, 
+                           nit, nombrefiscal, 
+                           direccionfiscal, status FROM cliente WHERE status != 0 ORDER BY idcliente DESC";
+            $request = $this->select_all($sql);
+            return $request;
+        } //Fin de la funcion getClientes
     }
 
 ?>
