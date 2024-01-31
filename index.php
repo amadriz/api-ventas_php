@@ -8,7 +8,8 @@
     $controller = $arrUrl[0];
     $method =  $arrUrl[0];
     $params = "";
-
+    
+    //add comments
     if(!empty($arrUrl[1])){
         if($arrUrl[1] != ""){
             $method = $arrUrl[1]; 
