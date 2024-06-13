@@ -93,6 +93,7 @@
                      $intTelefono =  $_POST['telefono'];
                      $strEmail =  strtolower($_POST['email']);
                      $strDireccion =  $_POST['direccion'];
+                     //strClean es una funcion de helpers.php para limpiar los datos de caracteres especiales
                      $strNit = !empty($_POST['nit']) ? strClean($_POST['nit']) : "";
                      $strNomFiscal = !empty($_POST['nombrefiscal']) ? strClean($_POST['nombrefiscal']) : "";
                      $strDirFiscal = !empty($_POST['direccionfiscal']) ? strClean($_POST['direccionfiscal']) : "";
@@ -255,7 +256,7 @@
                     $strNomFiscal = !empty($arrdata['nombrefiscal']) ? strClean($arrdata['nombrefiscal']) : "";
                     $strDirFiscal = !empty($arrdata['direccionfiscal']) ? strClean($arrdata['direccionfiscal']) : "";
 
-
+                    //Validar si el cliente existe
                     $buscar_cliente = $this->model->getCliente($idcliente);
 
                     if(empty($buscar_cliente))
@@ -448,18 +449,63 @@
         //delete cliente
         public function eliminar($idcliente)
         {
-            echo "Eliminar cliente".$idcliente;
+            try {
+                $method = $_SERVER['REQUEST_METHOD'];
+                $response = [];
+                //Validar si es un metodo DELETE
+                if($method == "DELETE")
+                {
+                    //Si el id es vacio o no es numerico devolver error
+                    if(empty($idcliente) or !is_numeric($idcliente)){
+                        $response = array(
+                            "status" => false,
+                            "message" => "Error en el id del cliente"
+                        );
+                        jsonResponse($response, 400);
+                        die();
+                    }
+
+                    //Validar si el cliente existe
+                    $buscar_cliente = $this->model->getCliente($idcliente);
+
+                    if(empty($buscar_cliente))
+                    {
+                        $response = array(
+                            "status" => false,
+                            "message" => "El cliente no existe"
+                        );
+                        $code = 400;
+                        jsonResponse($response, $code);
+                        die();
+                    }
+
+                    //Hacemos request al modelo
+                    $request = $this->model->deleteCliente($idcliente);
+
+                    if($request)
+                    {
+                        $response = array("status" => true,"message" => "Cliente eliminado correctamente");
+                    }else
+                    {
+                        $response = array("status" => false,"message" => "Error al eliminar");
+                    }
+
+                    $code = 200;
+
+                }else{
+                    $response = array("status" => false,"message" => "Error al consultar " .$method);
+                    $code = 400;
+                }
+                jsonResponse($response, $code);
+                die();
+            } catch (Exception $ex) {
+                echo "Error: ".$ex->getMessage();
+            }
         }
 
        
 
         
-
-        
-
-
-
-
 
 
 

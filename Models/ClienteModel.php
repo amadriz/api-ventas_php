@@ -160,6 +160,19 @@
             $request = $this->select_all($sql);
             return $request;
         } //Fin de la funcion getClientes
+
+        //Method to delete a client
+        public function deleteCliente(int $idcliente)
+        {
+            $this->intIdCliente = $idcliente;
+
+            $sql = "DELETE FROM cliente WHERE idcliente = :id";
+            $arrData = array(":id" => $this->intIdCliente);
+            $request = $this->delete($sql,$arrData);
+            return $request;
+
+        }
+        
     }
 
 ?>
