@@ -6,7 +6,119 @@
             parent::__construct();
         }
 
+        public function clientes(){
+            //Validar el metodo
+            try {
+                $method = $_SERVER['REQUEST_METHOD'];
+                $response = [];
+                //Validar si es un metodo GET
+                if($method == "GET")
+                {
+                    
+                    //Extraer todos los clientes
+                    $arrData = $this->model->getClientes();
+
+                    //if arrdata empty return error
+                    if(empty($arrData))
+                    {
+                        $response = array(
+                            "status" => false,
+                            "message" => "No hay clientes registrados"
+                        );
+                        $code = 400;
+                        jsonResponse($response, $code);
+                        die();
+                    }else
+                    {
+                        $response = array(
+                            "status" => true,
+                            "message" => "Clientes encontrados",
+                            "data" => $arrData
+                        );
+                        $code = 200;
+                    }
+                }
+                else
+                {
+                    $response = array(
+                    "status" => 400,
+                    "message" => "Error al consultar solo se permiten metodos GET"
+                    );
+
+                    $code = 400;
+                }
+                jsonResponse($response, $code);
+                die();
+            } catch (Exception $ex) {
+                //throw $ex
+                echo "Error: ".$ex->getMessage();
+            }
+        }
+
         
+        public function cliente($idcliente)
+        {
+            //devolver un cliente por id
+            try {
+                $method = $_SERVER['REQUEST_METHOD'];
+                $response = [];
+                //Validar si es un metodo GET
+                if($method == "GET")
+                {
+                    //Si el id es vacio o no es numerico devolver error
+                    if(empty($idcliente) or !is_numeric($idcliente)){
+                        $response = array(
+                            "status" => false,
+                            "message" => "Error en el id del cliente"
+                        );
+                        jsonResponse($response, 400);
+                        die();
+                    }
+
+                    //Buscar en el metodo getCliente del modelo el cliente por id
+                    $arrCliente = $this->model->getCliente($idcliente);
+                    
+                    if(empty($arrCliente))
+                    {
+                        $response = array(
+                            "status" => false,
+                            "message" => "El cliente no existe"
+                        );
+                        $code = 400;
+                        jsonResponse($response, $code);
+                        die();
+                    }else
+                    {
+                        $response = array(
+                            "status" => true,
+                            "message" => "Cliente encontrado",
+                            "data" => $arrCliente
+                        );
+                        $code = 200;
+                    }
+
+                }
+                else
+                {
+                    $response = array(
+                    "status" => 400,
+                    "message" => "Error al consultar" .$method
+                    );
+
+                    $code = 400;
+                }   
+                
+                jsonResponse($response, $code);
+                die();
+
+                } //end try
+                    catch (Exception $ex) {
+                    //throw $ex
+                    echo "Error: ".$ex->getMessage();
+                } //end catch
+
+        } //end function cliente
+
 
          //Create function registro
          public function registro()
@@ -330,121 +442,6 @@
                 echo "Error: ".$ex->getMessage();
             }
         }
-
-
-        public function cliente($idcliente)
-        {
-            //devolver un cliente por id
-            try {
-                $method = $_SERVER['REQUEST_METHOD'];
-                $response = [];
-                //Validar si es un metodo GET
-                if($method == "GET")
-                {
-                    //Si el id es vacio o no es numerico devolver error
-                    if(empty($idcliente) or !is_numeric($idcliente)){
-                        $response = array(
-                            "status" => false,
-                            "message" => "Error en el id del cliente"
-                        );
-                        jsonResponse($response, 400);
-                        die();
-                    }
-
-                    //Buscar en el metodo getCliente del modelo el cliente por id
-                    $arrCliente = $this->model->getCliente($idcliente);
-                    
-                    if(empty($arrCliente))
-                    {
-                        $response = array(
-                            "status" => false,
-                            "message" => "El cliente no existe"
-                        );
-                        $code = 400;
-                        jsonResponse($response, $code);
-                        die();
-                    }else
-                    {
-                        $response = array(
-                            "status" => true,
-                            "message" => "Cliente encontrado",
-                            "data" => $arrCliente
-                        );
-                        $code = 200;
-                    }
-
-                }
-                else
-                {
-                    $response = array(
-                    "status" => 400,
-                    "message" => "Error al consultar" .$method
-                    );
-
-                    $code = 400;
-                }   
-                
-                jsonResponse($response, $code);
-                die();
-
-                } //end try
-                    catch (Exception $ex) {
-                    //throw $ex
-                    echo "Error: ".$ex->getMessage();
-                } //end catch
-
-        } //end function cliente
-
-
-        public function clientes(){
-            //Validar el metodo
-            try {
-                $method = $_SERVER['REQUEST_METHOD'];
-                $response = [];
-                //Validar si es un metodo GET
-                if($method == "GET")
-                {
-                    
-                    //Extraer todos los clientes
-                    $arrData = $this->model->getClientes();
-
-                    //if arrdata empty return error
-                    if(empty($arrData))
-                    {
-                        $response = array(
-                            "status" => false,
-                            "message" => "No hay clientes registrados"
-                        );
-                        $code = 400;
-                        jsonResponse($response, $code);
-                        die();
-                    }else
-                    {
-                        $response = array(
-                            "status" => true,
-                            "message" => "Clientes encontrados",
-                            "data" => $arrData
-                        );
-                        $code = 200;
-                    }
-                }
-                else
-                {
-                    $response = array(
-                    "status" => 400,
-                    "message" => "Error al consultar solo se permiten metodos GET"
-                    );
-
-                    $code = 400;
-                }
-                jsonResponse($response, $code);
-                die();
-            } catch (Exception $ex) {
-                //throw $ex
-                echo "Error: ".$ex->getMessage();
-            }
-        }
-
 
         //delete cliente
         public function eliminar($idcliente)
