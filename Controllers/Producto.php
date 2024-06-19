@@ -23,7 +23,7 @@
                     {
                         $response = array(
                             "status" => false,
-                            "message" => "No hay clientes registrados"
+                            "message" => "No hay productos registrados"
                         );
                         $code = 400;
                         jsonResponse($response, $code);
@@ -228,7 +228,112 @@
 
         public function actualizar($idproducto)
         {
-            echo "Actualizar un producto ". $idproducto;
+            try
+            {
+                //Validar si es un metodo put
+                $method = $_SERVER['REQUEST_METHOD'];
+                $response = [];
+                
+                if($method == "PUT")
+                {
+                    
+                    $arrdata = json_decode(file_get_contents('php://input'), true);
+                    
+                    //Validar datos
+                    if(empty($idproducto) or !is_numeric($idproducto)){
+                        $response = array(
+                            "status" => false,
+                            "message" => "Error en el id del producto"
+                        );
+                        jsonResponse($response, 400);
+                        die();
+                    }
+
+                    //Validar codigo
+                    if(empty($arrdata['codigo']))
+                    {
+                        $response = array("status" => false,"message" => "El código es requerido");
+                        jsonResponse($response, 200);
+                        die();
+                    }
+                    //Validar nombre producto
+                    if(empty($arrdata['nombre']))
+                    {
+                        $response = array("status" => false,"message" => "El Nombre del producto es requerido");
+                        jsonResponse($response, 200);
+                        die();     
+                    }
+                    //validar descripcion del producto
+                    if(empty($arrdata['descripcion']))
+                    {
+                        $response = array("status" => false,"message" => "La descripcion es requerida");
+                        jsonResponse($response, 200);
+                        die();
+                    }
+                    //validar precio del producto
+                    if(empty($arrdata['precio']) or !is_numeric($arrdata['precio']))
+                    {
+                        $response = array("status" => false,"message" => "El precio es requerido y debe ser numerico");
+                        jsonResponse($response, 200);
+                        die();
+                    }
+
+                    $strCodigo = strClean($arrdata['codigo']);
+                    $strNombre = ucwords(strClean($arrdata['nombre']));
+                    $strDescripcion = strClean($arrdata['descripcion']);
+                    $strPrecio = $arrdata['precio'];
+
+                    $buscar_producto = $this->model->getProducto($idproducto);
+
+                    if(empty($buscar_producto))
+                    {
+                        $response = array("status" => false,"message" => "El producto no existe");
+                        $code = 200;
+                        jsonResponse($response, $code);
+                        die();
+                    }
+
+                    $request = $this->model->updateProducto($idproducto, $strCodigo, $strNombre, $strDescripcion, $strPrecio);
+
+                    if($request)
+                    {
+                        $arrProduct = array('idProducto' => $idproducto,
+                            "codigo" => $strCodigo,
+                            "nombre" => $strNombre,
+                            "descripcion" => $strDescripcion,
+                            "precio" => $strPrecio
+                        );
+
+                        $response = array('status' => true, 'message' => "Producto actualizado correctamente", 'data' => $arrProduct);
+
+                        $code = 200;
+                    }
+                    else
+                    {
+                        $response = array("status" => false,"message" => "Error al actualizar el producto el código ya existe");
+
+                        $code = 200;
+                    }
+                    
+                    
+                    
+                }
+                else
+                {
+                    $response = array("status" => false,"message" => "Error al actualizar el producto ".$method);
+
+                    $code = 200;
+                }
+                jsonResponse($response, $code);
+                die();
+
+
+
+            }
+            catch(Exception $e)
+            {
+                echo "Error: ".$e->getMessage();
+            }
         }
 
         public function eliminar($idproducto)

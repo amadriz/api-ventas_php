@@ -1,6 +1,8 @@
 <?php
     class Home extends Controllers{
 
+        public $views;
+
         public function __construct()
         {
             parent::__construct();

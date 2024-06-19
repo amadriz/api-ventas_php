@@ -1,6 +1,10 @@
 <?php
 
     class Controllers{
+
+        public $model;
+        public $views;
+        
         public function __construct()
         {
             $this->views = new Views();

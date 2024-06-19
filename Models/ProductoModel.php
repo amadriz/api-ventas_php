@@ -52,7 +52,7 @@
                            datecreated,
                            status FROM producto WHERE idproducto = $this->intIdProducto";
             
-            $request = $this->select($sql);
+            $request = $this->select($sql, []);
 
             return $request;
         }
@@ -87,7 +87,35 @@
                 $return = "El producto ya existe";
             }
 
-        }    
+        }  
+        
+        //Method to update a product
+        public function updateProducto(int $idproducto, string $codigo, string $nombre, string $descripcion, string $precio)
+        {
+            $this->intIdProducto = $idproducto;
+            $this->strCodigo = $codigo;
+            $this->strNombre = $nombre;
+            $this->strDescripcion = $descripcion;
+            $this->strPrecio = $precio;
+
+            $sql = "SELECT * FROM producto WHERE codigo = :cod AND idproducto != $this->intIdProducto";
+
+            $arrData = array(":cod" => $this->strCodigo);
+            $producto = $this->select($sql, $arrData);
+
+            if(empty($producto))
+            {
+                $sql = "UPDATE producto SET codigo = :codigo, nombre = :nombre, descripcion = :descripcion, precio = :precio WHERE idproducto = $this->intIdProducto AND status = 1";
+                $arrData = array(":codigo" => $this->strCodigo,
+                                 ":nombre" => $this->strNombre,
+                                 ":descripcion" => $this->strDescripcion,
+                                 ":precio" => $this->strPrecio);
+                $request = $this->update($sql, $arrData);
+                return $request;
+            } else {
+                $return = "El producto ya existe";
+            }
+        }
 
 
 
