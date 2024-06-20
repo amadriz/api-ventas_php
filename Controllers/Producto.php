@@ -25,14 +25,14 @@
                             "status" => false,
                             "message" => "No hay productos registrados"
                         );
-                        $code = 400;
+                        $code = 200;
                         jsonResponse($response, $code);
                         die();
                     }else
                     {
                         $response = array(
                             "status" => true,
-                            "message" => "Clientes encontrados",
+                            "message" => "Productos encontrados",
                             "data" => $arrProducts
                         );
                         $code = 200;
@@ -338,7 +338,66 @@
 
         public function eliminar($idproducto)
         {
-            echo "Eliminar un producto ". $idproducto;
+            try
+            {
+                //Validar si es un metodo put
+                $method = $_SERVER['REQUEST_METHOD'];
+                $response = [];
+                
+                if($method == "DELETE")
+                {
+                    //Validar datos
+                    if(empty($idproducto) or !is_numeric($idproducto)){
+                        $response = array(
+                            "status" => false,
+                            "message" => "Error en el id del producto"
+                        );
+                        jsonResponse($response, 400);
+                        die();
+                    }
+
+                    $buscar_producto = $this->model->getProducto($idproducto);
+
+                    if(empty($buscar_producto))
+                    {
+                        $response = array("status" => false,"message" => "El producto no existe");
+                        $code = 200;
+                        jsonResponse($response, $code);
+                        die();
+                    }
+
+                    $request = $this->model->deleteProducto($idproducto);
+
+                    if($request)
+                    {
+                        $response = array('status' => true, 'message' => "Producto eliminado correctamente");
+
+                        $code = 200;
+                    }
+                    else
+                    {
+                        $response = array("status" => false,"message" => "Error al eliminar el producto");
+
+                        $code = 200;
+                    }
+                    
+                    
+                    
+                }
+                else
+                {
+                    $response = array("status" => false,"message" => "Error al eliminar el producto ".$method);
+
+                    $code = 200;
+                }
+                jsonResponse($response, $code);
+                die();
+        }
+        catch(Exception $e)
+        {
+            echo "Error: ".$e->getMessage();
+        }
+
         }
 
         

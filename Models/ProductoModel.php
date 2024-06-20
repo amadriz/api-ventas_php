@@ -117,6 +117,16 @@
             }
         }
 
+        //Method to delete a product
+        public function deleteProducto(int $idproducto)
+        {
+            $this->intIdProducto = $idproducto;
+            $sql = "UPDATE producto SET status = 0 WHERE idproducto = $this->intIdProducto";
+            $request = $this->update($sql, []);
+            return $request;
+        }
+        
+
 
 
     }
