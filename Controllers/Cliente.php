@@ -66,7 +66,7 @@
                 if($method == "GET")
                 {
                     //Si el id es vacio o no es numerico devolver error
-                    if(empty($idcliente) or !is_numeric($idcliente)){
+                    if(empty($idcliente) || !is_numeric($idcliente)){
                         $response = array(
                             "status" => false,
                             "message" => "Error en el id del cliente"
@@ -147,7 +147,7 @@
                       }
  
                     //Validar nombres
-                    if(empty($_POST['nombres']) or !testString($_POST['nombres']))
+                    if(empty($_POST['nombres']) || !testString($_POST['nombres']))
                     {
                         $response = array(
                         "status" => false,
@@ -157,7 +157,7 @@
                         die();
                     }
                     //Validar apellidos
-                    if(empty($_POST['apellidos']) or!testString($_POST['apellidos']))
+                    if(empty($_POST['apellidos']) || !testString($_POST['apellidos']))
                     {
                         $response = array(
                         "status" => false,
@@ -167,7 +167,7 @@
                         die();     
                     }
                     //validar telefono
-                    if(empty($_POST['telefono']) or !testEntero($_POST['telefono']))
+                    if(empty($_POST['telefono']) || !testEntero($_POST['telefono']))
                     {
                         $response = array(
                         "status" => false,
@@ -177,7 +177,7 @@
                         die();
                     }
                     //validar email
-                    if(empty($_POST['email']) or !testEmail($_POST['email']))
+                    if(empty($_POST['email']) || !testEmail($_POST['email']))
                     {
                         $response = array(
                         "status" => false,
@@ -283,7 +283,7 @@
                 {
                     
                     //Validar datos
-                    if(empty($idcliente) or !is_numeric($idcliente)){
+                    if(empty($idcliente) || !is_numeric($idcliente)){
                         $response = array(
                             "status" => false,
                             "message" => "Error en el id del cliente"
@@ -304,7 +304,7 @@
 
                     }
                     //Validar nombres
-                    if(empty($arrdata['nombres']) or !testString($arrdata['nombres']))
+                    if(empty($arrdata['nombres']) || !testString($arrdata['nombres']))
                     {
                         $response = array(
                         "status" => false,
@@ -314,7 +314,7 @@
                         die();
                     }
                     //Validar apellidos
-                    if(empty($arrdata['apellidos']) or!testString($arrdata['apellidos']))
+                    if(empty($arrdata['apellidos']) || !testString($arrdata['apellidos']))
                     {
                         $response = array(
                         "status" => false,
@@ -324,7 +324,7 @@
                         die();     
                     }
                     //validar telefono
-                    if(empty($arrdata['telefono']) or !testEntero($arrdata['telefono']))
+                    if(empty($arrdata['telefono']) || !testEntero($arrdata['telefono']))
                     {
                         $response = array(
                         "status" => false,
@@ -334,7 +334,7 @@
                         die();
                     }
                     //validar email
-                    if(empty($arrdata['email']) or !testEmail($arrdata['email']))
+                    if(empty($arrdata['email']) || !testEmail($arrdata['email']))
                     {
                         $response = array(
                         "status" => false,
@@ -453,7 +453,7 @@
                 if($method == "DELETE")
                 {
                     //Si el id es vacio o no es numerico devolver error
-                    if(empty($idcliente) or !is_numeric($idcliente)){
+                    if(empty($idcliente) || !is_numeric($idcliente)){
                         $response = array(
                             "status" => false,
                             "message" => "Error en el id del cliente"

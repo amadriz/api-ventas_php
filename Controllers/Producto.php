@@ -161,7 +161,7 @@
                        die();
                    }
                    //validar precio del producto
-                   if(empty($_POST['precio']) or !is_numeric($_POST['precio']))
+                   if(empty($_POST['precio']) || !is_numeric($_POST['precio']))
                    {
                        $response = array(
                        "status" => false,
@@ -240,7 +240,7 @@
                     $arrdata = json_decode(file_get_contents('php://input'), true);
                     
                     //Validar datos
-                    if(empty($idproducto) or !is_numeric($idproducto)){
+                    if(empty($idproducto) || !is_numeric($idproducto)){
                         $response = array(
                             "status" => false,
                             "message" => "Error en el id del producto"
@@ -271,7 +271,7 @@
                         die();
                     }
                     //validar precio del producto
-                    if(empty($arrdata['precio']) or !is_numeric($arrdata['precio']))
+                    if(empty($arrdata['precio']) || !is_numeric($arrdata['precio']))
                     {
                         $response = array("status" => false,"message" => "El precio es requerido y debe ser numerico");
                         jsonResponse($response, 200);
@@ -347,7 +347,7 @@
                 if($method == "DELETE")
                 {
                     //Validar datos
-                    if(empty($idproducto) or !is_numeric($idproducto)){
+                    if(empty($idproducto) || !is_numeric($idproducto)){
                         $response = array(
                             "status" => false,
                             "message" => "Error en el id del producto"

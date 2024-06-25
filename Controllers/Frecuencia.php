@@ -240,8 +240,69 @@
             
         }
 
-        public function deleteFrecuencia()
+        public function delete($idfrecuencia)
         {
+            //validate method delete
+            $method = $_SERVER["REQUEST_METHOD"];
+            $response = [];
+
+            if($method == "DELETE"){
+
+                if(empty($idfrecuencia) || !is_numeric($idfrecuencia)){
+                    $response = array(
+                        "status" => false,
+                        "message" => "Error en el id de la frecuencia"
+                    );
+                    jsonResponse($response, 400);
+                    die();
+                }
+
+                $buscarFrecuencia = $this->model->getFrecuencia($idfrecuencia);
+
+                if(empty($buscarFrecuencia)){
+                    $response = [
+                        "status" => false,
+                        "msg" => "Frecuencia no encontrada"
+                    ];
+                    $code = 200;
+                    jsonResponse($response, $code);
+                    die();
+                }
+
+                $request = $this->model->deleteFrecuencia($idfrecuencia);
+
+                if($request){
+                    $response = [
+                        "status" => true,
+                        "msg" => "Frecuencia eliminada correctamente"
+                    ];
+                    $code = 200;
+                }   
+                else{
+                    $response = [
+                        "status" => false,
+                        "msg" => "Error al eliminar la frecuencia"
+                    ];
+                    $code = 200;
+                }
+                
+
+
+                jsonResponse($response, $code);
+                die();
+                
+            }else{
+                $response = [
+                    "status" => false,
+                    "msg" => "Metodo ".$method." no permitido, solo DELETE"
+                ];
+                $code = 400;
+                jsonResponse($response, $code);
+                die();
+            }
+
+
+
             
         }
 

@@ -77,6 +77,15 @@
             }
             
         }
+
+        //Metodo para eliminar una frecuencia
+        public function deleteFrecuencia(int $idfrecuencia)
+        {
+            $this->intIdFrecuencia = $idfrecuencia;
+            $sql = "UPDATE frecuencia SET status = 0 WHERE idfrecuencia = $this->intIdFrecuencia";
+            $request = $this->update($sql, []);
+            return $request;
+        }
         
 
     }
