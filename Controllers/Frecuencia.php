@@ -151,8 +151,92 @@
                
         }
 
-        public function updateFrecuencia()
+        public function actualizar($idfrecuencia)
         {
+            try
+            {
+                $method = $_SERVER["REQUEST_METHOD"];
+                $response = [];
+
+                if($method == "PUT")
+                {
+                    $arrData = json_decode(file_get_contents("php://input"), true);
+
+                    if(empty($idfrecuencia))
+                    {
+                        $response = [
+                            "status" => false,
+                            "msg" => "Frecuencia no encontrada"
+                        ];
+                        $code = 400;
+                        jsonResponse($response, $code);
+                        die();
+                    }
+
+                    //validations data
+                    if(empty($arrData['frecuencia']))
+                    {
+                        $response = [
+                            "status" => false,
+                            "msg" => "Datos incorrectos"
+                        ];
+                        $code = 400;
+                        jsonResponse($response, $code);
+                        die();
+                    }
+
+                    $strFrecuencia = $arrData['frecuencia'];
+
+                    $buscarFrecuencia = $this->model->getFrecuencia($idfrecuencia);
+
+                    if(empty($buscarFrecuencia))
+                    {
+                        $response = [
+                            "status" => false,
+                            "msg" => "Frecuencia no encontrada"
+                        ];
+                        $code = 400;
+                        jsonResponse($response, $code);
+                        die();
+                    }
+
+                    $request = $this->model->updateFrecuencia($idfrecuencia, $strFrecuencia);
+
+                    if($request)
+                    {
+                        $arrFrecuencia = array("idfrecuencia" => $idfrecuencia, 
+                            "frecuencia" => $strFrecuencia
+                        );
+
+                        $response = array("status" => true,"message" => "Frecuencia actualizada correctamente", "data" => $arrFrecuencia);
+
+                        $code = 200;
+                    }
+                    else
+                    {
+                        $response = array("status" => false,"message" => "Error al actualizar la frecuencia ".$method);
+
+                        $code = 200;
+                    }
+                    
+                }
+                else
+                {
+                    $response = array("status" => false,"message" => "Error al actualizar el producto ".$method);
+
+                    $code = 200;
+                }
+                
+                jsonResponse($response, $code);
+                die();
+
+            }
+            catch (Exception $e)
+            {
+                echo "Error en el controlador Frecuencia";
+            }
+
+
             
         }
 

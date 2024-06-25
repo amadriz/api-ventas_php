@@ -54,6 +54,29 @@
 
             return $request;
         }
+
+        //Metodo para actualizar una frecuencia
+        public function updateFrecuencia(int $idfrecuencia, string $frecuencia)
+        {
+            $this->intIdFrecuencia = $idfrecuencia;
+            $this->strFrecuencia = $frecuencia;
+
+            $sql = "SELECT * FROM frecuencia WHERE frecuencia = :frec AND idfrecuencia != $this->intIdFrecuencia";
+
+            //Comprobamos si la frecuencia existe
+            $arrData = array('frec' => $this->strFrecuencia);
+            $frecuencia = $this->select($sql, $arrData);
+
+           if(empty($frecuencia)){
+                $sql = "UPDATE frecuencia SET frecuencia = :frec WHERE idfrecuencia = $this->intIdFrecuencia AND status = 1";  
+                $arrData = array('frec' => $this->strFrecuencia);
+                $request = $this->update($sql, $arrData);
+                return $request;
+            }else{
+                return "La frecuencia ya existe";
+            }
+            
+        }
         
 
     }
