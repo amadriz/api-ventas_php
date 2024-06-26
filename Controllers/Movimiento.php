@@ -11,7 +11,6 @@
         
 public function registroTipoMovimiento()
 {
-    header('Content-Type: application/json'); // Ensure the content type is set to JSON
     try {
         $method = $_SERVER['REQUEST_METHOD'];
 
