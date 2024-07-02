@@ -23,11 +23,18 @@
             parent::__construct();
         }
 
-        public function insertCuenta(int $idcliente, int $productId, int $frecuenciaId, float $monto, int $cuotas, float $montocuotas, float $cargo, float $saldo)
+        public function selectCuentas(){
+            //fetch cuentas
+            $sql = "SELECT * FROM cuenta WHERE status = 1 ORDER BY idcliente DESC";
+            $request = $this->select_all($sql);
+            return $request;
+        }
+
+        public function insertCuenta(int $idcliente, int $idproducto, int $idfrecuencia, float $monto, int $cuotas, float $montocuotas, float $cargo, float $saldo)
         {
             $this->intIdCliente = $idcliente;
-            $this->intIdProduct = $productId;
-            $this->intIdFrecuencia = $frecuenciaId;
+            $this->intIdProduct = $idproducto;
+            $this->intIdFrecuencia = $idfrecuencia;
             $this->intMonto = $monto;
             $this->intcuotas = $cuotas;
             $this->intMontoCuotas = $montocuotas;
@@ -37,15 +44,16 @@
             //Check what is the value of the variables
            // dep(get_object_vars($this));
 
-            $sql = "INSERT INTO cuenta (idcliente, idproducto, idfrecuencia, monto, cuotas, monto_cuotas, cargo, saldo) 
-                        VALUES (:idcliente, :idproduct, :idfrecuencia, :monto, :cuotas, :montocuotas, :cargo, :saldo)";
+           
+           $sql = "INSERT INTO cuenta (idcliente, idproducto, idfrecuencia, monto, cuotas, monto_cuotas, cargo, saldo) 
+                   VALUES (:idcl, :idpr, :idfr, :monto, :cuotas, :mtcuotas, :cargo, :saldo)";
 
-            $arrData = array(':idcliente' => $this->intIdCliente, 
-                             ':idproducto' => $this->intIdProduct, 
-                             ':idfrecuencia' => $this->intIdFrecuencia, 
+            $arrData = array(':idcl' => $this->intIdCliente, 
+                             ':idpr' => $this->intIdProduct, 
+                             ':idfr' => $this->intIdFrecuencia, 
                              ':monto' => $this->intMonto, 
                              ':cuotas' => $this->intcuotas, 
-                             ':montocuotas' => $this->intMontoCuotas, 
+                             ':mtcuotas' => $this->intMontoCuotas, 
                              ':cargo' => $this->intcargo, 
                              ':saldo' => $this->intsaldo
                             );
@@ -57,4 +65,3 @@
 
     }
 
-?>

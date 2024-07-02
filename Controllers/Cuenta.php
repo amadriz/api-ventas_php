@@ -10,11 +10,55 @@
 
         public function cuenta($idcuenta)
         {
+            $method = $_SERVER['REQUEST_METHOD'];
+                $response = [];
+
+                if($method == 'GET'){
+
+                }else{
+                    
+                    $response = ['status' => false, 'message' => 'Method not allowed must use POST'];
+                    $code = 400;
+                }
+                jsonResponse($response, $code);
+                die();
+
             
         }
 
         public function cuentas()
         {
+            try {
+                $method = $_SERVER['REQUEST_METHOD'];
+                $response = [];
+
+                if($method == 'GET'){
+                    $arrData = $this->model->selectCuentas();
+                    
+                    if(empty($arrData)){
+                        $response = ['status' => false, 'message' => 'No hay registros de cuentas'];
+                        $code = 200;
+
+                    }else
+                    {
+                        $response = array(
+                            "status" => true,
+                            "message" => "Cuentas encontradas",
+                            "data" => $arrData
+                        );
+                        $code = 200;
+                    }    
+
+                }else{
+                    
+                    $response = ['status' => false, 'message' =>'Debe de usar método GET'];
+                    $code = 400;
+                }
+                jsonResponse($response, $code);
+                die();
+            } catch (Exception $ex) {
+                echo "Error en el proceso de registro " . $e->getMessage();
+            }
 
         }
 
@@ -119,6 +163,9 @@
                                                           $intMontoCuota, 
                                                           $intCargo, 
                                                           $intSaldo);
+
+                    //Check what is the value of the variables
+                    dep($request);                                     
 
                     if($request > 0){
                         //array showing the data
