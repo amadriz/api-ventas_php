@@ -30,6 +30,28 @@
             return $request;
         }
 
+        public function getCuenta(int $idcuenta)
+        {
+            $this->intIdCuenta = $idcuenta;
+            $sql = "SELECT c.idcuenta, c.idfrecuencia, f.frecuencia, c.monto, c.cuotas, c.monto_cuota, c.cargo, c.saldo,
+                           DATE_FORMAT(c.datecreated, %d-%m-%y) as fechaRegistro,
+                           c.clienteid, cl.nombre, cl.apellido, cl.telefono, cl.email, cl.direccion, cl.nit, cl.nombrefiscal,
+                           cl.direccionfiscal,
+                           p.idproducto, p.codigo as cod_producto, p.nombre 
+                           FROM cuenta c 
+                           INNER JOIN frecuencia f 
+                           ON c.idfrecuencia = f.idfrecuencia
+                           INNER JOIN cliente cl 
+                           ON c.idcliente = cl.idcliente 
+                           INNER JOIN producto p
+                            ON c.idproducto = p.idproducto
+                            WHERE c.idcuenta = $this->intIdCuenta";
+
+            $arrData = array($this->intIdCuenta);                
+            $request = $this->select($sql, $arrData);
+            return $request;
+        }
+
         public function insertCuenta(int $idcliente, int $idproducto, int $idfrecuencia, float $monto, int $cuotas, float $montocuotas, float $cargo, float $saldo)
         {
             $this->intIdCliente = $idcliente;

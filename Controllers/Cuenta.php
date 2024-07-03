@@ -62,6 +62,53 @@
 
         }
 
+        //Select cuenta by id
+        public function cuentaid($idcuenta)
+        {
+            try {
+                $method = $_SERVER['REQUEST_METHOD'];
+                $response = [];
+
+                if($method == 'GET'){
+
+                    
+                    if(empty($idcuenta) || !is_numeric($idcuenta)){
+                        
+                        $response = array(
+                            "status" => false,
+                            "message" => "El dato idcuenta es requerido"
+                        );
+                        
+                        die();
+                    }
+                    
+                    $arrCuenta = $this->model->getCuenta($idcuenta);
+
+
+                    dep($arrCuenta);
+
+                    
+                    
+                    
+                    $code = 200;
+
+                }else{
+                    
+                    $response = ['status' => false, 'message' => 'Method not allowed must use POST'];
+                    $code = 400;
+                }
+
+                jsonResponse($response, $code);
+                die();
+
+
+
+            } catch (Exception $ex) {
+                //throw $th;
+                echo "Error en el proceso de registro " . $e->getMessage();
+            }
+        }
+
         public function registro()
         {
             try {
