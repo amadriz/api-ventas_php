@@ -23,6 +23,21 @@
             parent::__construct();
         }
 
+        //Method to get Movimientos
+        public function getMovimientos(int $idcuenta)
+        {
+            $this->intIdCuenta = $idcuenta;
+            $sql = "SELECT m.idmovimiento, m.monto, m.descripcion, DATE_FORMAT(m.datecreated, '%d-%m-%Y') as fechaRegistro,
+                    tm.idtipomovimiento, tm.movimiento, tm.tipo_movimiento
+                    FROM movimiento m
+                    INNER JOIN tipo_movimiento tm ON m.idtipomovimiento = tm.idtipomovimiento
+                    WHERE m.cuentaid = $this->intIdCuenta AND m.status != 0";
+                    
+            
+            $request = $this->select_all($sql);
+            return $request;
+        }
+
         public function selectCuentas(){
             //fetch cuentas
             $sql = "SELECT * FROM cuenta WHERE status = 1 ORDER BY idcliente DESC";
@@ -33,21 +48,18 @@
         public function getCuenta(int $idcuenta)
         {
             $this->intIdCuenta = $idcuenta;
-            $sql = "SELECT c.idcuenta, c.idfrecuencia, f.frecuencia, c.monto, c.cuotas, c.monto_cuota, c.cargo, c.saldo,
-                           DATE_FORMAT(c.datecreated, %d-%m-%y) as fechaRegistro,
-                           c.clienteid, cl.nombre, cl.apellido, cl.telefono, cl.email, cl.direccion, cl.nit, cl.nombrefiscal,
+            $sql = "SELECT c.idcuenta, c.idfrecuencia, f.frecuencia, c.monto, c.cuotas, c.monto_cuotas, c.cargo, c.saldo,
+                           DATE_FORMAT(c.datecreated, '%d-%m-%Y') as fechaRegistro,
+                           c.idcliente, cl.nombres, cl.apellidos, cl.telefono, cl.email, cl.direccion, cl.nit, cl.nombrefiscal,
                            cl.direccionfiscal,
                            p.idproducto, p.codigo as cod_producto, p.nombre 
                            FROM cuenta c 
-                           INNER JOIN frecuencia f 
-                           ON c.idfrecuencia = f.idfrecuencia
-                           INNER JOIN cliente cl 
-                           ON c.idcliente = cl.idcliente 
-                           INNER JOIN producto p
-                            ON c.idproducto = p.idproducto
-                            WHERE c.idcuenta = $this->intIdCuenta";
-
-            $arrData = array($this->intIdCuenta);                
+                           INNER JOIN frecuencia f ON c.idfrecuencia = f.idfrecuencia
+                           INNER JOIN cliente cl ON c.idcliente = cl.idcliente 
+                           INNER JOIN producto p ON c.idproducto = p.idproducto
+                           WHERE c.idcuenta = :idcuenta";
+        
+            $arrData = array(":idcuenta" => $this->intIdCuenta);                     
             $request = $this->select($sql, $arrData);
             return $request;
         }

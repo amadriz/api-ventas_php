@@ -8,24 +8,7 @@
             parent::__construct();
         }
 
-        public function cuenta($idcuenta)
-        {
-            $method = $_SERVER['REQUEST_METHOD'];
-                $response = [];
-
-                if($method == 'GET'){
-
-                }else{
-                    
-                    $response = ['status' => false, 'message' => 'Method not allowed must use POST'];
-                    $code = 400;
-                }
-                jsonResponse($response, $code);
-                die();
-
-            
-        }
-
+       
         public function cuentas()
         {
             try {
@@ -63,7 +46,7 @@
         }
 
         //Select cuenta by id
-        public function cuentaid($idcuenta)
+        public function cuenta($idcuenta)
         {
             try {
                 $method = $_SERVER['REQUEST_METHOD'];
@@ -84,8 +67,26 @@
                     
                     $arrCuenta = $this->model->getCuenta($idcuenta);
 
+                    //Validar si existe la cuenta para extraer los movimientos
+                    if(empty($arrCuenta)){
+                        $response = ['status' => false, 'message' => 'Registro no encontrado'];
+                        $code = 200;
+                    }else{
+                        $arrMovimientos = $this->model->getMovimientos($idcuenta);
+                        //Para que el array incluya los movimiento
+                        //porque tiene que presentar datos de la cuenta aunque no tenga movimientos
+                        $arrCuenta['movimientos'] = $arrMovimientos;
+                        $response = array(
+                            "status" => true,
+                            "message" => "Datos Encontrados",
+                            "data" => $arrCuenta
+                        );
+                        // dep($arrMovimientos);
+                    }
+                    
 
-                    dep($arrCuenta);
+
+                    //dep($arrCuenta);
 
                     
                     
