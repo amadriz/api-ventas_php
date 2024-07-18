@@ -245,6 +245,67 @@
 
         }
 
+        public function orden($idorden){
+            try {
+                $method = $_SERVER['REQUEST_METHOD'];
+                $response = [];
+
+                if($method == 'GET'){
+
+                    
+                    if(empty($idorden)){
+                        
+                        $response = array(
+                            "status" => false,
+                            "message" => "El dato Orden es requerido"
+                        );
+                        
+                        $code = 200;
+                        jsonResponse($response, $code);
+                    }
+                    
+                    $arrCuenta = $this->model->getCuenta($idorden);
+
+                    //Validar si existe la orden para extraer los movimientos
+                    if(empty($arrCuenta)){
+                        $response = ['status' => false, 'message' => 'Registro no encontrado'];
+                        $code = 200;
+                    }else{
+                        
+                        $response = array(
+                            "status" => true,
+                            "message" => "Datos Encontrados",
+                            "data" => $arrCuenta
+                        );
+                        // dep($arrMovimientos);
+                    }
+                    
+
+
+                    //dep($arrCuenta);
+
+                    
+                    
+                    
+                    $code = 200;
+
+                }else{
+                    
+                    $response = ['status' => false, 'message' => 'Method not allowed must use GET'];
+                    $code = 400;
+                }
+
+                jsonResponse($response, $code);
+                die();
+
+
+
+            } catch (Exception $ex) {
+                //throw $th;
+                echo "Error en el proceso de registro " . $e->getMessage();
+            }
+        }
+
 
     }
 

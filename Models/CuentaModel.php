@@ -40,9 +40,23 @@
 
         public function selectCuentas(){
             //fetch cuentas
-            $sql = "SELECT * FROM cuenta WHERE status = 1 ORDER BY idcliente DESC";
+            $sql = "SELECT c.idcuenta,
+                    DATE_FORMAT(c.datecreated, '%d-%m-%Y') as fechaRegistro,
+                    concat(cl.nombres, ' ', cl.apellidos) as cliente,
+                    f.frecuencia,
+                    c.cuotas,
+                    c.monto_cuotas,
+                    c.cargo,
+                    c.saldo
+                    FROM cuenta c 
+                    INNER JOIN frecuencia f 
+                    ON c.idfrecuencia = f.idfrecuencia
+                    INNER JOIN cliente cl 
+                    ON c.idcliente = cl.idcliente 
+                    WHERE c.status != 0 ORDER BY c.idcuenta DESC";
             $request = $this->select_all($sql);
             return $request;
+            
         }
 
         public function getCuenta(int $idcuenta)

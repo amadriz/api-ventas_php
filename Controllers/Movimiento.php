@@ -54,7 +54,7 @@ public function registroTipoMovimiento()
         } else {
             jsonResponse(["status" => false, "msg" => "Error en el método de envío"], 400);
         }
-    } catch (\Throwable $e) { // Catch any error
+    } catch (Exception $e) { // Catch any error
         echo "Error en el proceso " . $e->getMessage();
     }
 }
@@ -112,7 +112,49 @@ public function fetchTiposMovimiento()
 }
 
 
+// METODOS PARA MOVIMIENTOS
+public function registroMovimiento(){
+    try{
+        $method = $_SERVER['REQUEST_METHOD'];
+
+        if ($method == "POST") {
+            $_POST = json_decode(file_get_contents('php://input'), true);
+
+            if (empty($_POST['cuentaid']) || !is_numeric($_POST['cuentaid'])) {
+                jsonResponse(["status" => false, "msg" => "Error en el id de la cuenta"], 200);
+                return; // Use return instead of die()
+            }
+
+            if (empty($_POST['tipo_movimiento']) || !is_numeric($_POST['tipo_movimiento'])) {
+                jsonResponse(["status" => false, "msg" => "El tipo de movimiento es requerido"], 200);
+                return;
+            }
+
+            if (empty($_POST['monto']) || !is_numeric($_POST['monto'])) {
+                jsonResponse(["status" => false, "msg" => "El monto es requerido"], 200);
+                return;
+            }
+
+            if (empty($_POST['descripcion'])) {
+                jsonResponse(["status" => false, "msg" => "La descripción es requerida"], 200);
+                return;
+            }
+
+            dep($_POST);
+            jsonResponse(["status" => true, "msg" => "Movimiento registrado correctamente"], 200);
+            
+
+        }else{
+            jsonResponse(["status" => false, "msg" => "Error en la solicitud " . $method . " debe utilizar POST"], 200);
+        }
+
+
+    }catch(Exception $e){
+        echo "Error en el proceso : " . $e->getMessage();
     }
+}
+
+}
 
 
 ?>
