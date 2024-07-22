@@ -4,10 +4,16 @@
     class MovimientoModel extends Mysql
     {
 
-        private $intIdMovimiento;
+        //Tipos de movimiento
         private $strMovimiento;
         private $intTipoMovimiento;
         private $strDescripcion;
+
+        //Movimientos
+        private $intIdMovimiento;
+        private $intIdCuenta;
+        private $descripcion;
+        private $intMonto;
 
         
         public function __construct()
@@ -46,6 +52,28 @@
             $sql = "SELECT * FROM tipo_movimiento WHERE status = 1";
             $request = $this->select_all($sql);
             return $request;
+        }
+
+
+        public function insertMovimiento(int $idcuenta, int $idMovimiento, float $monto, string $descripcion){
+            $this->intIdCuenta = $idcuenta;
+            $this->intIdMovimiento = $idMovimiento;
+            $this->intMonto = $monto;
+            $this->descripcion = $descripcion;
+
+            $sql = "INSERT INTO movimiento(cuentaid,idtipomovimiento,monto,descripcion) VALUES(:idcuenta,:idmovimiento,:monto,:descripcion)";
+
+            $arrData = array(":idcuenta" => $this->intIdCuenta, 
+                             ":idmovimiento" => $this->intIdMovimiento, 
+                             ":monto" => $this->intMonto, 
+                             ":descripcion" => $this->descripcion
+                            );
+
+            $request = $this->insert($sql, $arrData);
+
+            return $request;
+                        
+
         }
     }
 

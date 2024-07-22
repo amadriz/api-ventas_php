@@ -125,7 +125,7 @@ public function registroMovimiento(){
                 return; // Use return instead of die()
             }
 
-            if (empty($_POST['tipo_movimiento']) || !is_numeric($_POST['tipo_movimiento'])) {
+            if (empty($_POST['idtipomovimiento']) || !is_numeric($_POST['idtipomovimiento'])) {
                 jsonResponse(["status" => false, "msg" => "El tipo de movimiento es requerido"], 200);
                 return;
             }
@@ -140,8 +140,23 @@ public function registroMovimiento(){
                 return;
             }
 
-            dep($_POST);
-            jsonResponse(["status" => true, "msg" => "Movimiento registrado correctamente"], 200);
+            $intCuentaId = $_POST['cuentaid'];
+            $intTipoMovimiento = $_POST['idtipomovimiento'];
+            $intMonto = $_POST['monto'];
+            $strDescripcion = strclean($_POST['descripcion']);
+
+            $request_movimiento = $this->model->insertMovimiento($intCuentaId, $intTipoMovimiento, $intMonto, $strDescripcion);
+
+            if ($request_movimiento > 0) {
+                $arrMovimiento = [
+                    'idmovimiento' => $request_movimiento
+                    
+                ];
+
+                jsonResponse(["status" => true, "msg" => "Movimiento registrado correctamente", "data" => $arrMovimiento], 200);
+            } else {
+                jsonResponse(["status" => false, "msg" => "No es posible registrar el movimiento"], 200);
+            }
             
 
         }else{
