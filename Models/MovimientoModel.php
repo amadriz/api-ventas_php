@@ -14,6 +14,7 @@
         private $intIdCuenta;
         private $descripcion;
         private $intMonto;
+        private $intMovimiento;
 
         
         public function __construct()
@@ -55,16 +56,18 @@
         }
 
 
-        public function insertMovimiento(int $idcuenta, int $idMovimiento, float $monto, string $descripcion){
+        public function insertMovimiento(int $idcuenta, int $idMovimiento, int $movimiento, float $monto, string $descripcion){
             $this->intIdCuenta = $idcuenta;
             $this->intIdMovimiento = $idMovimiento;
+            $this->intTipoMovimiento = $movimiento;
             $this->intMonto = $monto;
             $this->descripcion = $descripcion;
 
-            $sql = "INSERT INTO movimiento(cuentaid,idtipomovimiento,monto,descripcion) VALUES(:idcuenta,:idmovimiento,:monto,:descripcion)";
+            $sql = "INSERT INTO movimiento(cuentaid,idtipomovimiento,movimiento,monto,descripcion) VALUES(:idcuenta,:idmovimiento,:movimiento,:monto,:descripcion)";
 
             $arrData = array(":idcuenta" => $this->intIdCuenta, 
-                             ":idmovimiento" => $this->intIdMovimiento, 
+                             ":idmovimiento" => $this->intIdMovimiento,
+                             ":movimiento" => $this->intTipoMovimiento, 
                              ":monto" => $this->intMonto, 
                              ":descripcion" => $this->descripcion
                             );
@@ -74,6 +77,22 @@
             return $request;
                         
 
+        }
+        
+        public function selectMovimientos()
+        {
+            $sql = "SELECT m.idmovimiento, m.cuentaid, m.movimiento, m.monto, m.descripcion, DATE_FORMAT(m.datecreated, '%d-%m-%y' ) as fechaRegistro FROM movimiento m INNER JOIN tipo_movimiento tm ON m.idtipomovimiento = tm.idtipomovimiento";
+            $request = $this->select_all($sql);
+            return $request;
+        }
+
+        public function selectMovimiento(int $idmovimiento)
+        {
+            $this->intIdMovimiento = $idmovimiento;
+            $sql = "SELECT m.idmovimiento, m.cuentaid, m.movimiento, m.monto, m.descripcion, DATE_FORMAT(m.datecreated, '%d-%m-%y' ) as fechaRegistro FROM movimiento m INNER JOIN tipo_movimiento tm ON m.idtipomovimiento = tm.idtipomovimiento WHERE m.idmovimiento = :idmovimiento";
+    $arrData = array(":idmovimiento" => $this->intIdMovimiento);
+    $request = $this->select($sql, $arrData);
+    return $request;
         }
     }
 
