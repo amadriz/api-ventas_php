@@ -290,18 +290,17 @@ public function eliminarMovimiento(int $idmovimiento){
 
             // exit;
 
-            if ($request_movimiento) {
-                $response = [
-                    "status" => true,
-                    "msg" => "Movimiento eliminado correctamente"
-                ];
-                $code = 200;
-            } else {
-                $response = [
-                    "status" => false,
-                    "msg" => "No es posible eliminar el movimiento"
-                ];
-                $code = 200;
+            if(empty($request_movimiento)){
+                jsonResponse(["status" => false, "msg" => "El movimiento no existe"], 200);
+                return;
+            }else{
+                $request_movimiento = $this->model->deleteMovimiento($idmovimiento);
+                
+                if($request_movimiento){
+                    jsonResponse(["status" => true, "msg" => "Movimiento eliminado correctamente", 'data' => $request_movimiento[0]], 200);
+                }else{
+                    jsonResponse(["status" => false, "msg" => "No es posible eliminar el movimiento"], 200);
+                }
             }
         } else {
             $response = [

@@ -90,10 +90,20 @@
         {
             $this->intIdMovimiento = $idmovimiento;
             $sql = "SELECT m.idmovimiento, m.cuentaid, m.movimiento, m.monto, m.descripcion, DATE_FORMAT(m.datecreated, '%d-%m-%y' ) as fechaRegistro FROM movimiento m INNER JOIN tipo_movimiento tm ON m.idtipomovimiento = tm.idtipomovimiento WHERE m.idmovimiento = :idmovimiento";
-    $arrData = array(":idmovimiento" => $this->intIdMovimiento);
-    $request = $this->select($sql, $arrData);
-    return $request;
+            $arrData = array(":idmovimiento" => $this->intIdMovimiento);
+            $request = $this->select($sql, $arrData);
+            return $request;
         }
+
+        public function deleteMovimiento(int $idmovimiento)
+        {
+            $this->intIdMovimiento = $idmovimiento;
+            $sql = "CALL sp_anularMovimiento(:idmovimiento)";
+            $arrData = array(":idmovimiento" => $this->intIdMovimiento);
+            $request = $this->call_execute($sql, $arrData);
+            return $request;
+        }
+
     }
 
 ?>

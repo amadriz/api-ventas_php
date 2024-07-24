@@ -91,6 +91,23 @@
                 return $response;
             }
         }
+
+        //Ejecutar un procedimiento almacenado
+        public function call_execute(string $query, array $arrValues)
+		{
+            try {
+                $this->strquery = $query;
+                $this->arrValues = $arrValues;
+                $query = $this->conexion->prepare($this->strquery);
+                $query->execute($this->arrValues);
+                $request = $query->fetchall(PDO::FETCH_ASSOC); //Ejecuta el SP
+                $query->closeCursor();
+                return $request;
+            } catch (Exception $e) {
+                $response = "Error: ". $e->getMessage();
+                return $response;
+            }
+        }
     }
 
 ?>

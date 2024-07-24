@@ -220,7 +220,7 @@
                                                             $strNomFiscal, 
                                                             $strDirFiscal);
 
-                    Print_r($request);
+                    // Print_r($request);
  
  
  
