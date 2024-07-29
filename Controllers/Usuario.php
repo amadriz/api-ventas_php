@@ -84,7 +84,7 @@
                     if($request > 0){
                         $response = [
                             "status" => true,
-                            "msg" => "Registro exitoso"
+                            "msg" => "Registro de usuario exitoso"
                         ];
 
                         $code = 200;
@@ -94,7 +94,7 @@
                     }else{
                         $response = [
                             "status" => false,
-                            "msg" => "Error al registrar"
+                            "msg" => "El email ya existe"
                         ];
 
                         $code = 400;
@@ -117,6 +117,31 @@
 
             }
         }//Cierre m◙todo registro
+
+
+        public function actualizar($idusuario){
+
+            $method = $_SERVER["REQUEST_METHOD"];
+            $response = [];
+
+            $arrdata = json_decode(file_get_contents("php://input"), true);
+
+            if($method == "PUT"){
+                return true;
+            
+            }else{
+                $response = [
+                    "status" => false,
+                    "msg" => "Error en el método, debe de ser PUT"
+                ];
+
+                $code = 400;
+
+                jsonResponse($response, $code);
+
+            }
+
+        }
             
         } // Cierre de la clase
 
