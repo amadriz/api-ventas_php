@@ -389,11 +389,21 @@
                     $requestUser = $this->model->loginUser($strEmail, $strPassword);
 
 
+                    if(empty($requestUser)){
+                        $response = [
+                            "status" => false,
+                            "msg" => "El email o el password son incorrectos"
+                        ];
 
+                        $code = 200;
 
-                    dep($requestUser);
-                    exit;
+                        jsonResponse($response, $code);
 
+                        die();
+                    }else{
+                        $response = array('status' => true, 'msg' => 'Bienvenido', 'data' => $requestUser);
+
+                    }
 
                 }else{
                     
@@ -409,6 +419,10 @@
                 
                 }
 
+                $code = 200;
+
+                jsonResponse($response, $code);
+                die();
 
             }catch(Exception $e){
                 echo "Error en el proceso login: ". $e->getMessage();

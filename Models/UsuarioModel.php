@@ -136,11 +136,13 @@
             return $request;
         }
 
-        public function loginUser(string $email, string $password){
+        public function loginUser(string $email, string $password)
+        {
             $this->strEmail = $email;
             $this->strPassword = $password;
 
-            $sql = "SELECT id_usuario, nombre, apellido, email, password FROM usuario WHERE email = :email AND password = :pass AND status != 0";
+            //BINARY para que sea case sensitive
+            $sql = "SELECT id_usuario, status FROM usuario WHERE email =  BINARY :email AND password = BINARY :pass AND status != 0";
             $arrData = array(":email" => $this->strEmail, ":pass" => $this->strPassword);
             $request = $this->select($sql,$arrData);
 
