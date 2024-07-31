@@ -18,6 +18,38 @@
             parent::__construct();
         }
 
+        public function getUsuario(int $idusuario)
+        {
+            $this->intIdUsuario = $idusuario;
+            $sql = "SELECT id_usuario,
+							nombre,
+							apellido,
+							email,
+							DATE_FORMAT(datecreated, '%d-%m-%Y') as fechaRegistro
+							FROM usuario WHERE id_usuario = :iduser AND status != :status ";
+            $arrData = array(":iduser" => $this->intIdUsuario, ":status" => 0);
+            $request = $this->select($sql,$arrData);
+            return $request;
+        }
+
+        //fetch all
+        public function getUsuarios(){
+            $sql = "SELECT id_usuario,
+                            nombre,
+                            apellido,
+                            email,
+                            DATE_FORMAT(datecreated, '%d-%m-%Y') as fechaRegistro
+                            FROM usuario WHERE status != 0";
+            
+            
+            $request = $this->select_all($sql);
+            
+            
+            return $request;
+
+
+        }
+
         //Insertar un nuevo usuario
         public function insertUsuario( string $nombre, string $apellido, string $email, string $password){
 
@@ -33,10 +65,12 @@
             
             $request = $this->select_all($sql);
 
+            // dep($request);
+
             if(empty($request))
             {
-                $query_insert = "INSERT INTO usuario(nombre, apellido, email, password, status) 
-                VALUES(:nom, :ape, :email, :pass, 1)";
+                $query_insert = "INSERT INTO usuario(nombre, apellido, email, password) 
+                VALUES(:nom, :ape, :email, :pass)";
 
                 $arrData = array(':nom' => $this->strNombre,
                                  ':ape' => $this->strApellido,
@@ -48,10 +82,69 @@
 
                 return $request_insert;
             }else{
-                return "El usuario ya existe";
+                return false;
             }
 
 
+        } //Fin de la función insertUsuario
+
+        public function updateUsuario(int $idusuario, string $nombres, string $apellidos, string $email, string $password){
+            $this->intIdUsuario = $idusuario;
+            $this->strNombre = $nombres;
+			$this->strApellido = $apellidos;
+			$this->strEmail = $email;
+			$this->strPassword = $password;
+
+            $sql = "SELECT email FROM usuario WHERE 
+                    (email = :email AND id_usuario != :id ) AND
+                    status != 0";
+            $arrData = array(":email" => $this->strEmail,":id" => $this->intIdUsuario);
+            $request_usuario = $this->select($sql,$arrData);
+            if(empty($request_usuario))
+            {
+                if($this->strPassword == "")
+                {
+                    $sql = "UPDATE usuario SET nombre = :nom, apellido = :ape, email = :email
+                    WHERE id_usuario = :id ";
+                    $arrData = array(":nom" => $this->strNombre,
+                                    ":ape" =>  $this->strApellido,
+                                    ":email" => $this->strEmail,
+                                    ":id" => $this->intIdUsuario);
+
+                }else{
+                    $sql = "UPDATE usuario SET nombre = :nom, apellido = :ape, email = :email, password = :pass
+                    WHERE id_usuario = :id ";
+                    $arrData = array(":nom" => $this->strNombre,
+                                    ":ape" =>  $this->strApellido,
+                                    ":email" => $this->strEmail,
+                                    ":pass" => $this->strPassword,
+                                    ":id" => $this->intIdUsuario);
+                }
+                $request = $this->update($sql,$arrData);
+                return $request;
+            }else{
+                return false;
+            }
+
+        } //Fin de la función updateUsuario
+
+        public function deleteUsuario(int $idusuario){
+            $this->intIdUsuario = $idusuario;
+            $sql = "UPDATE usuario SET status = :estado WHERE id_usuario = :id ";
+            $arrData = array(":estado" => 0, ":id" => $this->intIdUsuario );
+            $request = $this->update($sql,$arrData);
+            return $request;
+        }
+
+        public function loginUser(string $email, string $password){
+            $this->strEmail = $email;
+            $this->strPassword = $password;
+
+            $sql = "SELECT id_usuario, nombre, apellido, email, password FROM usuario WHERE email = :email AND password = :pass AND status != 0";
+            $arrData = array(":email" => $this->strEmail, ":pass" => $this->strPassword);
+            $request = $this->select($sql,$arrData);
+
+            return $request;
         }
 
     }
