@@ -13,6 +13,7 @@
         private $strDireccion;
         private $strNit;
         private $strNomFiscal;
+        private $strDirFiscal;
         private $intStatus;
         
         public function __construct()
@@ -96,9 +97,13 @@
                      ":ident" => $this->strIdentificacion,
                      ":id" =>  $this->intIdCliente 
                     );
+           
             $request_cliente = $this->select($sql,$arrData);
 
-            if(empty($request_cliente))
+            //show request_cliente
+           
+
+            if(!empty($request_cliente))
          //Si el cliente no existe insertar
             {
                 $sql = "UPDATE cliente SET identificacion = :ident, nombres = :nom, apellidos = :ape, telefono = :tel, email = :email,
@@ -115,6 +120,8 @@
                                  ":dirfiscal" => $this->strDirFiscal,
                                  ":id" => $this->intIdCliente
                             );
+
+                
                 $request = $this->update($sql,$arrData);
                 
                 return $request;

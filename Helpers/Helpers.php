@@ -1,5 +1,11 @@
 <?php
 
+    //requeire jwt
+    require_once 'Libraries/Jwt/vendor/autoload.php';
+    use Firebase\JWT\JWT;
+    use Firebase\JWT\key;
+
+
     //Retorla la url del proyecto
 	function base_url()
 	{
@@ -108,6 +114,45 @@
         {
             return false;
         }
+    }
+
+    function fntAuthorization(array $arrHeaders)
+    {
+
+         if(empty($arrHeaders['Authorization']))
+         {
+            $response = array('status' => false, 'message' => 'Autenticación requerida');
+            jsonResponse($response, 401);
+            die();
+         }else{
+            $token = $arrHeaders['Authorization'];
+            $arrTokenBearer = explode(" ", $token);
+            
+            //Si el token no es Bearer
+            if($arrTokenBearer[0] != 'Bearer')
+            {
+                $response = array('status' => false, 'message' => 'Error de autenticación');
+                jsonResponse($response, 401);
+                die();
+            }else{
+                $token = $arrTokenBearer[1];
+            
+                // JWT decode token
+                try {
+                    $payload = JWT::decode($token, new Key(SECRET_KEY, 'HS512'));
+                    // dep($payload);
+                    // exit();
+                } catch (Exception $e) {
+                    // Handle the exception if the token is invalid or decoding fails
+                    $arrResponse = array('status' => false, 'message' => 'Token no es válido => '.$e->getMessage());
+                    jsonResponse($arrResponse, 401);
+                    die();
+                }
+            }
+
+           
+         }
+         
     }
     
 

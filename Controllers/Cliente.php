@@ -11,9 +11,17 @@
             try {
                 $method = $_SERVER['REQUEST_METHOD'];
                 $response = [];
+
+
+
                 //Validar si es un metodo GET
                 if($method == "GET")
                 {
+                    //Para validar el token o autenticar    
+                    $arrHeaders = getallheaders();
+                    //funcion fntAuthorization en helpers.php
+                    $response = fntAuthorization($arrHeaders);
+                    //************************** */
                     
                     //Extraer todos los clientes
                     $arrData = $this->model->getClientes();
@@ -50,8 +58,10 @@
                 jsonResponse($response, $code);
                 die();
             } catch (Exception $ex) {
-                //throw $ex
-                echo "Error: ".$ex->getMessage();
+                // Handle the exception if the token is invalid or decoding fails
+                $arrResponse = array('status' => false, 'message' => 'Token no es válido => '.$ex->getMessage());
+                jsonResponse($arrResponse, 401);
+                die();
             }
         }
 
@@ -65,6 +75,11 @@
                 //Validar si es un metodo GET
                 if($method == "GET")
                 {
+                    //Para validar el token o autenticar    
+                    $arrHeaders = getallheaders();
+                    //funcion fntAuthorization en helpers.php
+                    $response = fntAuthorization($arrHeaders);
+                    //************************** */
                     //Si el id es vacio o no es numerico devolver error
                     if(empty($idcliente) || !is_numeric($idcliente)){
                         $response = array(
@@ -112,9 +127,11 @@
                 die();
 
                 } //end try
-                    catch (Exception $ex) {
-                    //throw $ex
-                    echo "Error: ".$ex->getMessage();
+                catch (Exception $ex) {
+                // Handle the exception if the token is invalid or decoding fails
+                $arrResponse = array('status' => false, 'message' => 'Token no es válido => '.$ex->getMessage());
+                jsonResponse($arrResponse, 401);
+                die();
                 } //end catch
 
         } //end function cliente
@@ -131,6 +148,12 @@
                  //Validar si es un metodo post
                  if($method == "POST")
                  {
+
+                    //Para validar el token o autenticar    
+                    $arrHeaders = getallheaders();
+                    //funcion fntAuthorization en helpers.php
+                    $response = fntAuthorization($arrHeaders);
+                    //************************** */
                      
                     $_POST = json_decode(file_get_contents('php://input'), true);
  
@@ -259,8 +282,10 @@
                  
              } //end if method post
              catch(Exception $e){
-                 //show error in screen
-                 echo "Error: ".$e->getMessage();
+                 // Handle the exception if the token is invalid or decoding fails
+                $arrResponse = array('status' => false, 'message' => 'Token no es válido => '.$ex->getMessage());
+                jsonResponse($arrResponse, 401);
+                die();
  
              }
              die();
@@ -281,7 +306,11 @@
                 //Validar si es un metodo PUT
                 if($method == "PUT")
                 {
-                    
+                    //Para validar el token o autenticar    
+                    $arrHeaders = getallheaders();
+                    //funcion fntAuthorization en helpers.php
+                    $response = fntAuthorization($arrHeaders);
+                    //************************** */
                     //Validar datos
                     if(empty($idcliente) || !is_numeric($idcliente)){
                         $response = array(
@@ -415,7 +444,7 @@
                                         $response = array('status' => true , 'msg' => 'Datos actualizados correctamente', 'data' => $arrdata);
                     }else
                     {
-                        $response = array('status' => false , 'msg' => 'La identificación o el email ya existe');
+                        $response = array('status' => false , 'msg' => 'Error al actualizar');
                     }
 
                     
@@ -438,8 +467,10 @@
                 
                 
             } catch (Exception $ex) {
-                //throw $ex
-                echo "Error: ".$ex->getMessage();
+                // Handle the exception if the token is invalid or decoding fails
+                $arrResponse = array('status' => false, 'message' => 'Token no es válido => '.$ex->getMessage());
+                jsonResponse($arrResponse, 401);
+                die();
             }
         }
 
@@ -452,6 +483,12 @@
                 //Validar si es un metodo DELETE
                 if($method == "DELETE")
                 {
+
+                    //Para validar el token o autenticar    
+                    $arrHeaders = getallheaders();
+                    //funcion fntAuthorization en helpers.php
+                    $response = fntAuthorization($arrHeaders);
+                    //************************** */
                     //Si el id es vacio o no es numerico devolver error
                     if(empty($idcliente) || !is_numeric($idcliente)){
                         $response = array(
@@ -496,7 +533,10 @@
                 jsonResponse($response, $code);
                 die();
             } catch (Exception $ex) {
-                echo "Error: ".$ex->getMessage();
+                // Handle the exception if the token is invalid or decoding fails
+                $arrResponse = array('status' => false, 'message' => 'Token no es válido => '.$ex->getMessage());
+                jsonResponse($arrResponse, 401);
+                die();
             }
         }
 
