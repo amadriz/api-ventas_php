@@ -489,6 +489,7 @@
                     //funcion fntAuthorization en helpers.php
                     $response = fntAuthorization($arrHeaders);
                     //************************** */
+                    
                     //Si el id es vacio o no es numerico devolver error
                     if(empty($idcliente) || !is_numeric($idcliente)){
                         $response = array(

@@ -3,6 +3,19 @@
 
         public function __construct()
         {
+
+            try{
+                //Para validar el token o autenticar    
+                $arrHeaders = getallheaders();
+                //funcion fntAuthorization en helpers.php
+                $response = fntAuthorization($arrHeaders);
+                //************************** */
+            }catch(Exception $ex){
+                // Handle the exception if the token is invalid or decoding fails
+                $arrResponse = array('status' => false, 'message' => 'Token no es válido => '.$ex->getMessage());
+                jsonResponse($arrResponse, 401);
+                die();
+            }
             parent::__construct();
         }
 
@@ -80,6 +93,7 @@
                 //if method
                 if($method == "GET")
                 {
+                    
                     //Extraer un producto
                     $arrProduct = $this->model->getProducto($idproducto);
 
