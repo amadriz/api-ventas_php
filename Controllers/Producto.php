@@ -3,7 +3,7 @@
 
         public function __construct()
         {
-
+            //Si se quiere proteger todos los métodos se mete en el constructor
             try{
                 //Para validar el token o autenticar    
                 $arrHeaders = getallheaders();
