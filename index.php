@@ -1,8 +1,8 @@
 <?php
 
-    //add cors
+    //add cors remplazar * por la url de la aplicacion.
     header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Headers: X-API-KEY, Access-Control-Request-Method, Content-Type, Authorization, X-Requested-With");
+    header("Access-Control-Allow-Headers: X-API-KEY, Access-Control-Request-Method, Content-Type, X-Auth-Token, Authorization, X-Requested-With");
     header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
     header("Allow: GET, POST, OPTIONS, PUT, DELETE");
     

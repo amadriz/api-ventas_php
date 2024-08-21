@@ -153,7 +153,31 @@
            
          }
          
-    }
+    } //End function fntAuthorization
+
+    function getTokenApi(){
+
+        
+        $ch = curl_init();
+        //url es la misma que genera los tokens
+        curl_setopt($ch, CURLOPT_URL, 'http://auth-jwt.gt/AuthJwt/getToken');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUe);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
+        curl_setopt($ch, CURLOPT_USERPWD, CLIENT_ID.":".SECRET_KEY);
+        $result = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
+        if($err)
+        {
+            $request = "CURL Error #:".$err;
+        }else{
+            $request = json_decode($result, true);
+        }
+        return $request;
+
+
+    } //End function getTokenApi
     
 
 ?>

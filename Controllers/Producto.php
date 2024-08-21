@@ -16,6 +16,7 @@
                 jsonResponse($arrResponse, 401);
                 die();
             }
+            
             parent::__construct();
         }
 

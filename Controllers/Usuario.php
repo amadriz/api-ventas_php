@@ -5,6 +5,20 @@
 
         public function __construct()
         {
+            //Si se quiere proteger todos los métodos se mete en el constructor
+            try{
+                //Para validar el token o autenticar    
+                $arrHeaders = getallheaders();
+                //funcion fntAuthorization en helpers.php
+                $response = fntAuthorization($arrHeaders);
+                //************************** */
+            }catch(Exception $ex){
+                // Handle the exception if the token is invalid or decoding fails
+                $arrResponse = array('status' => false, 'message' => 'Token no es válido => '.$ex->getMessage());
+                jsonResponse($arrResponse, 401);
+                die();
+            }
+
             parent::__construct();
         }
 
@@ -15,6 +29,12 @@
                 $response = [];
                 if($method == "GET")
                 {
+                    //Para validar el token o autenticar    
+                    $arrHeaders = getallheaders();
+                    //funcion fntAuthorization en helpers.php
+                    $response = fntAuthorization($arrHeaders);
+                    //************************** */
+
                     if(empty($idusuario) or !is_numeric($idusuario)){
                         $response = array('status' => false , 'msg' => 'Error en los parametros');
                         jsonResponse($response,400);
@@ -36,8 +56,11 @@
                 jsonResponse($response,$code);
                 die();
 
-            } catch (Exception $e) {
-                echo "Error en el proceso: ". $e->getMessage();
+            } catch (Exception $ex) {
+                // Handle the exception if the token is invalid or decoding fails
+                $arrResponse = array('status' => false, 'message' => 'Token no es válido => '.$ex->getMessage());
+                jsonResponse($arrResponse, 401);
+                die();
             }
 
             die();
@@ -52,6 +75,12 @@
                 $response = [];
                 if($method == "GET")
                 {
+                    //Para validar el token o autenticar    
+                    $arrHeaders = getallheaders();
+                    //funcion fntAuthorization en helpers.php
+                    $response = fntAuthorization($arrHeaders);
+                    //************************** */
+
                     $arrData = $this->model->getUsuarios();
                     if(empty($arrData))
                     {
@@ -67,21 +96,27 @@
                 jsonResponse($response,$code);
                 die();
 
-            } catch (Exception $e) {
-                echo "Error en el proceso: ". $e->getMessage();
+            } catch (Exception $ex) {
+                // Handle the exception if the token is invalid or decoding fails
+                $arrResponse = array('status' => false, 'message' => 'Token no es válido => '.$ex->getMessage());
+                jsonResponse($arrResponse, 401);
+                die();
             }
             die();
         }
 
         public function registro(){
-            
-
             try{
 
                 $method = $_SERVER["REQUEST_METHOD"];
                 $response = [];
 
                 if($method == "POST"){
+                    //Para validar el token o autenticar    
+                    $arrHeaders = getallheaders();
+                    //funcion fntAuthorization en helpers.php
+                    $response = fntAuthorization($arrHeaders);
+                    //************************** */
 
                     $_POST = json_decode(file_get_contents('php://input'), true);
     
@@ -179,13 +214,17 @@
                     jsonResponse($response, $code);
 
                 }
-            }catch(Exception $e){
-                echo "Error en el proceso registro: ". $e->getMessage();
+            }catch(Exception $ex){
+                // Handle the exception if the token is invalid or decoding fails
+                $arrResponse = array('status' => false, 'message' => 'Token no es válido => '.$ex->getMessage());
+                jsonResponse($arrResponse, 401);
+                die();
             }
         }//Cierre m◙todo registro
 
 
         public function actualizar($idusuario){
+            try{
 
             $method = $_SERVER["REQUEST_METHOD"];
             $response = [];
@@ -193,6 +232,13 @@
             $arrdata = json_decode(file_get_contents("php://input"), true);
 
             if($method == "PUT"){
+
+                //Para validar el token o autenticar    
+                $arrHeaders = getallheaders();
+                //funcion fntAuthorization en helpers.php
+                $response = fntAuthorization($arrHeaders);
+                //************************** */
+
                 if($idusuario == ""){
                     $response = [
                         "status" => false,
@@ -318,6 +364,13 @@
                 jsonResponse($response, $code);
 
             }
+        }catch(Exception $ex){
+            // Handle the exception if the token is invalid or decoding fails
+            $arrResponse = array('status' => false, 'message' => 'Token no es válido => '.$ex->getMessage());
+            jsonResponse($arrResponse, 401);
+            die();
+        }
+        
 
         }
 
@@ -328,6 +381,13 @@
                 $response = [];
                 if($method == "DELETE")
                 {
+
+                    //Para validar el token o autenticar    
+                    $arrHeaders = getallheaders();
+                    //funcion fntAuthorization en helpers.php
+                    $response = fntAuthorization($arrHeaders);
+                    //************************** */
+
                     if(empty($idusuario) or !is_numeric($idusuario)){
                         $response = array('status' => false , 'msg' => 'Error en los parametros');
                         jsonResponse($response,400);
@@ -356,8 +416,11 @@
                 jsonResponse($response,$code);
                 die();
 
-            } catch (Exception $e) {
-                echo "Error en el proceso: ". $e->getMessage();
+            } catch (Exception $ex) {
+                // Handle the exception if the token is invalid or decoding fails
+                $arrResponse = array('status' => false, 'message' => 'Token no es válido => '.$ex->getMessage());
+                jsonResponse($arrResponse, 401);
+                die();
             }
             die();
 
@@ -407,9 +470,24 @@
 
                         die();
                     }else{
-                        $response = array('status' => true, 'msg' => 'Bienvenido', 'data' => $requestUser);
+
+                        //Funcion getTokenApi en helpers.php
+                        $tokenRequest = getTokenApi();
+
+                        if($tokenRequest['status']){
+                            $arrAuth = $tokenRequest['data'];
+                            $arrAuth['id_usuario'] = $requestUser['id_usuario'];
+                            $code = 200;
+                            $response = array('status' => true, 'msg' => 'Bienvenido al sistema', 'auth' => $arrAuth);
+                        }else{
+                            $code = 200;
+                            $response = array('status' => false, 'msg' => 'Error de autenticación');
+                        }
 
                     }
+
+                    jsonResponse($response, $code);
+                    die();
 
                 }else{
                     
