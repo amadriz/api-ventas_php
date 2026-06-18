@@ -5,19 +5,7 @@
 
         public function __construct()
         {
-            //Si se quiere proteger todos los métodos se mete en el constructor
-            try{
-                //Para validar el token o autenticar    
-                $arrHeaders = getallheaders();
-                //funcion fntAuthorization en helpers.php
-                $response = fntAuthorization($arrHeaders);
-                //************************** */
-            }catch(Exception $ex){
-                // Handle the exception if the token is invalid or decoding fails
-                $arrResponse = array('status' => false, 'message' => 'Token no es válido => '.$ex->getMessage());
-                jsonResponse($arrResponse, 401);
-                die();
-            }
+            
 
             parent::__construct();
         }
@@ -76,9 +64,9 @@
                 if($method == "GET")
                 {
                     //Para validar el token o autenticar    
-                    $arrHeaders = getallheaders();
+                    //$arrHeaders = getallheaders();
                     //funcion fntAuthorization en helpers.php
-                    $response = fntAuthorization($arrHeaders);
+                    //$response = fntAuthorization($arrHeaders);
                     //************************** */
 
                     $arrData = $this->model->getUsuarios();
@@ -112,11 +100,7 @@
                 $response = [];
 
                 if($method == "POST"){
-                    //Para validar el token o autenticar    
-                    $arrHeaders = getallheaders();
-                    //funcion fntAuthorization en helpers.php
-                    $response = fntAuthorization($arrHeaders);
-                    //************************** */
+                    
 
                     $_POST = json_decode(file_get_contents('php://input'), true);
     
@@ -480,7 +464,7 @@
                             $code = 200;
                             $response = array('status' => true, 'msg' => 'Bienvenido al sistema', 'auth' => $arrAuth);
                         }else{
-                            $code = 200;
+                            $code = 401;
                             $response = array('status' => false, 'msg' => 'Error de autenticación');
                         }
 

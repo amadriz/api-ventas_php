@@ -161,7 +161,7 @@
         $ch = curl_init();
         //url es la misma que genera los tokens
         curl_setopt($ch, CURLOPT_URL, 'http://auth-jwt.gt/AuthJwt/getToken');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUe);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
         curl_setopt($ch, CURLOPT_USERPWD, CLIENT_ID.":".SECRET_KEY);
